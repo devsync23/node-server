@@ -1,5 +1,5 @@
 const http = require('node:http');
-
+const qs = require('node:querystring')
 const server = http.createServer();
 
 const users = [
@@ -16,8 +16,18 @@ function handleEndpoint(endpoint, request, response) {
   // set up conditions for checking the route and the method
   if (endpoint === '/users') {
     if (method === 'GET') {
-      response.end(JSON.stringify({ users }))
+     response.end(JSON.stringify({ users }))
     }
+    if (method === 'POST') {
+    let body = []
+    request
+      .on('data', chunk => body.push(chunk))
+      .on('end', () => {
+        body = JSON.parse(Buffer.concat(body).toString())
+        users.push(body)
+        response.end(JSON.stringify(users))
+      })
+  }
   }
 }
 
