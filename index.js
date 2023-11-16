@@ -3,7 +3,8 @@ const http = require('node:http');
 const server = http.createServer();
 
 const users = [
-  { id: 1, name: "JB", age: 30 }
+  // try adding more fields to user - username, password, etc.
+    { id: 1, name: "JB", age: 30 }
 ]
 const routes = [
   '/users',
@@ -33,6 +34,7 @@ function handleEndpoint(endpoint, request, response) {
         // Buffer objects are used to represent a fixed-length sequence of bytes.
         // .concat is a public Buffer method - can use it whenever / wherever
         body = JSON.parse(Buffer.concat(body).toString()); // body is a JS {}
+        // how do we check that user doesn't already exist in users []?
         users.push(body);
         // response.end(JSON.stringify(body)); // response needs to be a string
         response.end(JSON.stringify(users)); // returning updated users array instead of just the body in line above
