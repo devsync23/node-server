@@ -18,6 +18,28 @@ function handleEndpoint(endpoint, request, response) {
     if (method === 'GET') {
       response.end(JSON.stringify({ users }))
     }
+    if (method === 'POST') {
+      let body = [] // stores all of the data chunks
+      // setting up 2 event listeners, one on "data", one on "end"
+      // data coming in from request -> push chunk of data into body []
+      // when finished sending data, will use Buffer class to concat dataStream array into string --> into body []
+      // then send back response to client (Postman in this case)
+      // see https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction
+      request.on("data", chunk => {
+          body.push(chunk);
+      })
+      .on("end", () => {
+        // https://nodejs.org/api/buffer.html#buffer
+        // Buffer objects are used to represent a fixed-length sequence of bytes.
+        // .concat is a public Buffer method - can use it whenever / wherever
+        body = JSON.parse(Buffer.concat(body).toString()); // body is a JS {}
+        users.push(body);
+        // response.end(JSON.stringify(body)); // response needs to be a string
+        response.end(JSON.stringify(users)); // returning updated users array instead of just the body in line above
+      })
+
+      // response.end("You've sent a POST request!")
+    }
   }
 }
 
