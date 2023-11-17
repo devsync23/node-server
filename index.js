@@ -31,9 +31,6 @@ function isExistingUser(inputUser, UsersLibrary) {
   return output;
 }
 
-let testUser = { name: "Andrew", email: "JB@JB.com" };
-console.log(isExistingUser(testUser, users));
-
 // Creating url routes/ endpoint for http request
 const routes = [
   '/users',
@@ -79,6 +76,13 @@ function handleEndpoint(endpoint, request, response) {
             // if there is empty entry in the request body data, set statusCode
             response.statusCode = 400;
           }
+        }
+
+        const isEmailInUse = isExistingUser(data, users)
+        if (isEmailInUse) {
+          response.status = 400;
+          response.end(`${data.email} already exists! Please input a different email`)
+          return;
         }
         // checking statusCode and provide response accordingly
         // if statusCode is not badRequest, then proceed with adding new user to
