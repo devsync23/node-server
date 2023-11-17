@@ -3,13 +3,31 @@ const http = require('node:http');
 
 const server = http.createServer();
 
-const users = [
-  { id: 1, name: "JB", age: 30 }
+const usersLibrary = [
+  {
+    name: "string",
+    email: "string@.string.com",
+    phoneNumber: 12345678910,
+    password: "stringpassword",
+    bio: "stringing along",
+    age: 15,
+    verified: false,
+  }
 ]
+
 const routes = [
   '/users',
   '/signup'
 ]
+
+function checkForExistingUser(user,usersLibrary) {
+  if (Object.values(users).includes(user.email)) {
+    response.end(`Email already exists`)
+  } else {
+    users.push(JSON.parse(body))
+    response.end(JSON.stringify({ users }))
+  }
+}
 
 // request handler
 function handleEndpoint(endpoint, request, response) {
@@ -31,7 +49,7 @@ function handleEndpoint(endpoint, request, response) {
         response.end(JSON.stringify({ users }))
       } else if (method === 'POST') {
         let data = JSON.parse(body);
-
+        checkForExistingUser(data)
         for (const key in data) {
           if (data[key] === '') {
             response.statusCode = 400;
