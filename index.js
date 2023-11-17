@@ -96,3 +96,6 @@ server.on('request', (request, response) => {
 
 // Setting up server event listener, running server continously
 server.listen(3000, undefined, undefined, () => console.log("server is listening on port 3000..."))
+// usually runs on port 3000 or 3001
+// clients side run on port 88 or 8000
+// naming convention
