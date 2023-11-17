@@ -4,19 +4,36 @@ const http = require('node:http');
 
 const server = http.createServer();
 
-// interface User {
-//   name: string;
-//   email: string;
-//   password: string;
-//   bio: string;
-//   age: number;
-//   verified: boolean;
-// }
 
 // Creating users variable "database"
 const users = [
-  { id: 1, name: "JB", age: 30 }
+  {
+    name: "JB",
+    email: "JB@JB.com",
+    phoneNumber: 3102223242,
+    password: "asdfasda",
+    bio: "asdasdasd",
+    age: 30,
+    verified: false
+  }
 ]
+
+// function should accept a user object input
+// if the user object has an email value that maches an existing user
+// return
+function isExistingUser(inputUser,UsersLibrary) {
+  let output = false;
+  UsersLibrary.forEach((user) =>{
+    if(user.email === inputUser.email){
+      output = true;
+    }
+  })
+  return output;
+}
+
+let testUser = {name:"Andrew", email: "JB@JB.com"};
+console.log(isExistingUser(testUser,users));
+
 // Creating url routes/ endpoint for http request
 const routes = [
   '/users',
