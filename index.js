@@ -1,5 +1,6 @@
 const http = require('node:http');
 
+
 const server = http.createServer();
 
 const users = [
@@ -14,11 +15,37 @@ const routes = [
 function handleEndpoint(endpoint, request, response) {
   const { method } = request;
   // set up conditions for checking the route and the method
-  if (endpoint === '/users') {
-    if (method === 'GET') {
-      response.end(JSON.stringify({ users }))
+  let body = [];
+  request.on('error', err => {
+    console.error(err);
+  })
+  request.on('data', chunk => {
+    body.push(chunk);
+  })
+  // you can only access the body of the request within this request.on('end') scope
+  request.on('end', () => {
+    body = Buffer.concat(body).toString();
+
+    if (endpoint === '/users') {
+      if (method === 'GET') {
+        response.end(JSON.stringify({ users }))
+      } else if (method === 'POST') {
+        let data = JSON.parse(body);
+
+        for (const key in data) {
+          if (data[key] === '') {
+            response.statusCode = 400;
+          }
+        }
+        if (response.statusCode !== 400) {
+          users.push(JSON.parse(body))
+          response.end(JSON.stringify({ users }))
+        } else {
+          response.end(`Response status code: ${response.statusCode}\nDescription: data is missing fields\n${JSON.stringify({ users })} `)
+        }
+      }
     }
-  }
+  })
 }
 
 // .on( eventName: string, callback function )
