@@ -21,18 +21,18 @@ const users = [
 // function should accept a user object input
 // if the user object has an email value that maches an existing user
 // return
-function isExistingUser(inputUser,UsersLibrary) {
+function isExistingUser(inputUser, UsersLibrary) {
   let output = false;
-  UsersLibrary.forEach((user) =>{
-    if(user.email === inputUser.email){
+  UsersLibrary.forEach((user) => {
+    if (user.email === inputUser.email) {
       output = true;
     }
   })
   return output;
 }
 
-let testUser = {name:"Andrew", email: "JB@JB.com"};
-console.log(isExistingUser(testUser,users));
+let testUser = { name: "Andrew", email: "JB@JB.com" };
+console.log(isExistingUser(testUser, users));
 
 // Creating url routes/ endpoint for http request
 const routes = [
@@ -53,29 +53,29 @@ function handleEndpoint(endpoint, request, response) {
   const { method } = request;
   // Handling serialization data and accessing request body data
   let body = [];
-  request.on('error', err =>{
+  request.on('error', err => {
     console.error(err);
   })
-  request.on('data', chunk =>{
+  request.on('data', chunk => {
     body.push(chunk);
   })
   // you can only access the body of the request within this request.on('end') scope
-  request.on('end', () =>{
+  request.on('end', () => {
     body = Buffer.concat(body).toString();
 
-  // check for endpoint and method
+    // check for endpoint and method
     if (endpoint === '/users') {
       // sending back response with existing users data
       if (method === 'GET') {
         response.end(JSON.stringify({ users }))
       }
       //  pushing POST data into our exisiting user library
-      if (method === "POST"){
+      if (method === "POST") {
         // parsing the JSON body data at line 36 to actual js data
         let data = JSON.parse(body);
         // checking if there is empty entry to the request body data
-        for (const key in data){
-          if (data[key] === ''){
+        for (const key in data) {
+          if (data[key] === '') {
             // if there is empty entry in the request body data, set statusCode
             response.statusCode = 400;
           }
@@ -83,14 +83,14 @@ function handleEndpoint(endpoint, request, response) {
         // checking statusCode and provide response accordingly
         // if statusCode is not badRequest, then proceed with adding new user to
         // our existing users library
-        if(response.statusCode!== 400){
+        if (response.statusCode !== 400) {
           users.push(JSON.parse(body));
-          response.end(JSON.stringify({users}))
+          response.end(JSON.stringify({ users }))
         }
         // if statusCode is badRequest, DO NOT add new user and provide response
         // with
-        else{
-          response.end(`Response status code: ${response.statusCode}\nDescription:data is missing fields\n${JSON.stringify({users})}`
+        else {
+          response.end(`Response status code: ${response.statusCode}\nDescription:data is missing fields\n${JSON.stringify({ users })}`
           )
         }
       }
@@ -102,14 +102,14 @@ function handleEndpoint(endpoint, request, response) {
 // Creating Server handler
 server.on('request', (request, response) => {
   const endpoint = request.url;
-    if (routes.includes(endpoint)) {
-      // if the route is valid, pass it to the `handleEndpoint` function, along with the request and response objects
-      handleEndpoint(endpoint, request, response)
-    } else {
-      // if endpoint doesn't match our routes, return error
-      response.statusCode = 404;
-      response.end("Could not find route")
-    }
+  if (routes.includes(endpoint)) {
+    // if the route is valid, pass it to the `handleEndpoint` function, along with the request and response objects
+    handleEndpoint(endpoint, request, response)
+  } else {
+    // if endpoint doesn't match our routes, return error
+    response.statusCode = 404;
+    response.end("Could not find route")
+  }
 
 })
 
