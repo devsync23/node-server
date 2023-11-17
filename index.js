@@ -15,6 +15,7 @@ const routes = [
 function handleEndpoint(endpoint, request, response) {
   const { method } = request;
   // set up conditions for checking the route and the method
+  // could set up router object to handle GET / POST / etc.
   if (endpoint === '/users') {
     if (method === 'GET') {
       response.end(JSON.stringify({ users }))
